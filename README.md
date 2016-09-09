@@ -27,8 +27,12 @@ let h = new Handler({
 let errors = await h.handle(
   new Error('unhandled error'),
   {
-    unhandledError: {
-      message: 'unhandled error'
+    unhandledError: { // custom handler name
+      message: 'unhandled error' // error message (can be a function)
+    },
+    mongoUniqueness: { // built-in handler name
+      indexName: 'uniqueEmail', // handler option
+      message: 'already taken' // error message (can be a function)
     }
   }
 ); // -> [{message: 'unhandled error'}]
