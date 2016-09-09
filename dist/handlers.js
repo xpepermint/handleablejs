@@ -5,13 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.mongoUniqueness = mongoUniqueness;
 exports.blockInspect = blockInspect;
-
-var _mongoErrorParser = require('mongo-error-parser');
-
-var _mongoErrorParser2 = _interopRequireDefault(_mongoErrorParser);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function mongoUniqueness(e) {
   var _ref = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 

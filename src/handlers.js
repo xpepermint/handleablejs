@@ -1,5 +1,3 @@
-import mongoParser from 'mongo-error-parser';
-
 export function mongoUniqueness(e, {indexName}={}) {
   var isError = (
     e
