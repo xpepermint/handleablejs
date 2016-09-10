@@ -59,7 +59,7 @@ class Handler {
         }
 
         let match = yield handler.call(_this.context, error, definition);
-        if (!match) {
+        if (match) {
           errors.push((yield _this.errorBuilder.call(_this.context, error, definition)));
 
           if (_this.firstErrorOnly) break;

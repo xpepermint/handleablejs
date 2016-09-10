@@ -32,7 +32,7 @@ export class Handler {
       }
 
       let match = await handler.call(this.context, error, definition);
-      if (!match) {
+      if (match) {
         errors.push(
           await this.errorBuilder.call(this.context, error, definition)
         );

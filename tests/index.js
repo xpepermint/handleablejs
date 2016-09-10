@@ -1,7 +1,7 @@
 const test = require('ava');
 const {Handler} = require('../dist/index');
 
-test('Handler.handle', async (t) => {
+test.only('Handler.handle', async (t) => {
   let error = new Error();
   error.message = 'foo error';
   error.code = 404;
@@ -9,17 +9,21 @@ test('Handler.handle', async (t) => {
   let h = new Handler({
     handlers: {
       fooError: (e) => e.message === 'foo error',
-      notFound: (e) => e.code === 404
+      notFound: (e) => e.code === 404,
+      doFound: (e) => e.code === 500
     }
   });
   let result = await h.handle(
-    '',
+    error,
     {
       fooError: {
         message: 'is foo'
       },
       notFound: {
         message: 'not found'
+      },
+      doFound: {
+        message: 'do found'
       }
     }
   );
