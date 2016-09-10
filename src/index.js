@@ -1,9 +1,9 @@
 import * as defaultHandlers from './handlers';
 
-export function defaultErrorBuilder(error, definition) {
+export function defaultErrorBuilder(error, value, definition) {
   let {message} = definition;
   let isString = typeof message === 'string';
-  return isString ? message : message.call(this, error, definition);
+  return isString ? message : message.call(this, error, value, definition);
 }
 
 export class Handler {
@@ -20,7 +20,7 @@ export class Handler {
     this.context = context;
   }
 
-  async handle(error, definitions={}) {
+  async handle(error, value=null, definitions={}) {
     let errors = [];
 
     for (let name in definitions) {
@@ -31,10 +31,10 @@ export class Handler {
         throw new Error(`Unknown handler ${name}`);
       }
 
-      let match = await handler.call(this.context, error, definition);
+      let match = await handler.call(this.context, error, value, definition);
       if (match) {
         errors.push(
-          await this.errorBuilder.call(this.context, error, definition)
+          await this.errorBuilder.call(this.context, error, value, definition)
         );
 
         if (this.firstErrorOnly) break;

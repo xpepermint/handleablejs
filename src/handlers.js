@@ -1,8 +1,9 @@
-export function mongoUniqueness(e, {indexName}={}) {
+export function mongoUniqueness(e, v, {indexName}={}) {
   var isError = (
     e
     && e.message
-    && e.message.indexOf('E11000 duplicate key error index:') === 0
+    && e.message.indexOf(`E11000 duplicate key error index:`) === 0
+    && e.message.lastIndexOf(`dup key: { : "${v}" }`) !== -1
     && (
       typeof e.code === 'undefined'
       || e.code === 11000
@@ -17,11 +18,11 @@ export function mongoUniqueness(e, {indexName}={}) {
   }
 }
 
-export function blockInspect(e, definition={}) {
+export function blockInspect(e, v, definition={}) {
   return (
     !!e
     && !!definition
     && typeof definition.block === 'function'
-    && definition.block.call(this, e, definition) === true
+    && definition.block.call(this, e, v, definition) === true
   );
 }

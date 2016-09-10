@@ -15,6 +15,7 @@ test.only('Handler.handle', async (t) => {
   });
   let result = await h.handle(
     error,
+    null,
     {
       fooError: {
         message: 'is foo'
@@ -44,7 +45,8 @@ test('Handler.handle with onlyFirstError=true', async (t) => {
     }
   });
   let result = await h.handle(
-    '',
+    null,
+    null,
     {
       fooError: {
         message: 'is foo'
@@ -70,7 +72,8 @@ test('Handler.handle with custom errorBuilder', async (t) => {
     }
   });
   let result = await h.handle(
-    '',
+    null,
+    null,
     {
       fooError: {
         message: 'is foo'
@@ -91,7 +94,8 @@ test('Handler.handle with handler message as a function', async (t) => {
     }
   });
   let result = await h.handle(
-    '',
+    null,
+    null,
     {
       fooError: {
         message: (e) => 'is foo'

@@ -14,11 +14,11 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { return step("next", value); }, function (err) { return step("throw", err); }); } } return step("next"); }); }; }
 
-function defaultErrorBuilder(error, definition) {
+function defaultErrorBuilder(error, value, definition) {
   let message = definition.message;
 
   let isString = typeof message === 'string';
-  return isString ? message : message.call(this, error, definition);
+  return isString ? message : message.call(this, error, value, definition);
 }
 
 class Handler {
@@ -46,7 +46,8 @@ class Handler {
         _this = this;
 
     return _asyncToGenerator(function* () {
-      let definitions = _arguments.length <= 1 || _arguments[1] === undefined ? {} : _arguments[1];
+      let value = _arguments.length <= 1 || _arguments[1] === undefined ? null : _arguments[1];
+      let definitions = _arguments.length <= 2 || _arguments[2] === undefined ? {} : _arguments[2];
 
       let errors = [];
 
@@ -58,9 +59,9 @@ class Handler {
           throw new Error(`Unknown handler ${ name }`);
         }
 
-        let match = yield handler.call(_this.context, error, definition);
+        let match = yield handler.call(_this.context, error, value, definition);
         if (match) {
-          errors.push((yield _this.errorBuilder.call(_this.context, error, definition)));
+          errors.push((yield _this.errorBuilder.call(_this.context, error, value, definition)));
 
           if (_this.firstErrorOnly) break;
         }

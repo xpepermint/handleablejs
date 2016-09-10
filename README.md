@@ -17,15 +17,16 @@ import {Handler} from 'handleable';
 
 let h = new Handler({
   firstErrorOnly: true,
-  errorBuilder: async (error, definition) => ({message: definition.message}), // for custom error messages
+  errorBuilder: async (error, value, definition) => ({message: definition.message}), // for custom error messages
   handlers: { // custom handlers (will be merged with built-in handlers; existing handlers can be overridden)
-    unhandledError: async (error, definition) => eror.message === 'unhandled error'
+    unhandledError: async (error, value, definition) => eror.message === 'unhandled error'
   },
   context: null // context is applied to each handler
 });
 
 let errors = await h.handle(
   new Error('unhandled error'),
+  null, // optional error-related value
   {
     unhandledError: { // custom handler name
       message: 'unhandled error' // error message (can be a function)
@@ -58,6 +59,7 @@ let errors = await h.handle(
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
 | error | Any | Yes | - | An error to validate.
+| value | Any | No | - | An error-related value.
 | definitions | Object | Yes | - | A configuration object describing handlers.
 
 ### Built-in Handlers
@@ -80,7 +82,7 @@ let errors = await h.handle(
 
 ```js
 let definition = {
-  block: async (error, definition) => true,
+  block: async (error, value, definition) => true,
   message: 'is unknown error'
 };
 ```
