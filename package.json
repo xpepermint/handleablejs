@@ -1,6 +1,6 @@
 {
   "name": "handleable",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "A library for synchronous and asynchronous error handling.",
   "main": "./dist/index.js",
   "ava": {
