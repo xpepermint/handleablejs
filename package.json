@@ -1,6 +1,6 @@
 {
   "name": "handleable",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "A library for synchronous and asynchronous error handling.",
   "main": "./dist/index.js",
   "ava": {
@@ -42,7 +42,7 @@
   "license": "MIT",
   "devDependencies": {
     "ava": "0.16.x",
-    "babel-cli": "6.14.x",
+    "babel-cli": "6.16.x",
     "babel-preset-node5": "11.1.x"
   }
 }
