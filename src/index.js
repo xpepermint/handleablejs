@@ -1,6 +1,6 @@
 import * as defaultHandlers from './handlers';
 
-export function defaultErrorBuilder(error, value, definition) {
+export function defaultErrorBuilder(name, error, value, definition) {
   let {message} = definition;
   let isString = typeof message === 'string';
   return isString ? message : message.call(this, error, value, definition);
@@ -34,7 +34,7 @@ export class Handler {
       let match = await handler.call(this.context, error, value, definition);
       if (match) {
         errors.push(
-          await this.errorBuilder.call(this.context, error, value, definition)
+          await this.errorBuilder.call(this.context, name, error, value, definition)
         );
 
         if (this.firstErrorOnly) break;

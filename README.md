@@ -24,7 +24,7 @@ import {Handler} from 'handleable';
 
 let h = new Handler({
   firstErrorOnly: true,
-  errorBuilder: async (error, value, definition) => ({message: definition.message}), // for custom error messages
+  errorBuilder: async (name, error, value, definition) => ({message: definition.message}), // for custom error messages
   handlers: { // custom handlers (will be merged with built-in handlers; existing handlers can be overridden)
     unhandledError: async (error, value, definition) => eror.message === 'unhandled error'
   },
@@ -55,7 +55,7 @@ let errors = await h.handle(
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
 | firstErrorOnly | Boolean | No | false | When set to `true`, only the first error is handled otherwise all errors are returned.
-| errorBuilder | Function/Promise | No | (error, {message}) => message | A method for constructing a custom error message.
+| errorBuilder | Function/Promise | No | (name, error, value, {message}) => message | A method for constructing a custom error message.
 | handlers | Object | No | built-in handlers | Object with custom handlers (this variable is merged with built-in handlers thus you can override a handler if you need to).
 | context | Object | No | null | A custom context reference which is applied to each handler.
 

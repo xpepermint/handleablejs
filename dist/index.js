@@ -14,7 +14,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 
 function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
 
-function defaultErrorBuilder(error, value, definition) {
+function defaultErrorBuilder(name, error, value, definition) {
   let message = definition.message;
 
   let isString = typeof message === 'string';
@@ -61,7 +61,7 @@ class Handler {
 
         let match = yield handler.call(_this.context, error, value, definition);
         if (match) {
-          errors.push((yield _this.errorBuilder.call(_this.context, error, value, definition)));
+          errors.push((yield _this.errorBuilder.call(_this.context, name, error, value, definition)));
 
           if (_this.firstErrorOnly) break;
         }
