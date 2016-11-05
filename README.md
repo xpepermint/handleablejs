@@ -4,6 +4,8 @@
 
 > A library for synchronous and asynchronous error handling.
 
+This is a light weight open source package, written with [TypeScript](https://www.typescriptlang.org), for use on **server or in browser**. The source code is available on [GitHub](https://github.com/xpepermint/handleablejs) where you can also find our [issue tracker](https://github.com/xpepermint/handleablejs/issues).
+
 ## Related Projects
 
 * [Contextable.js](https://github.com/xpepermint/contextablejs): Simple, unopinionated and minimalist framework for creating context objects with support for unopinionated ORM, object schemas, type casting, validation and error handling and more.
@@ -12,6 +14,8 @@
 * [Typeable.js](https://github.com/xpepermint/typeablejs): A library for checking and casting types.
 
 ## Install
+
+Run the command below to install the package.
 
 ```
 $ npm install --save handleable
@@ -22,52 +26,59 @@ $ npm install --save handleable
 ```js
 import {Handler} from 'handleable';
 
-let h = new Handler({
-  firstErrorOnly: true,
-  errorBuilder: async (name, error, value, definition) => ({message: definition.message}), // for custom error messages
-  handlers: { // custom handlers (will be merged with built-in handlers; existing handlers can be overridden)
-    unhandledError: async (error, value, definition) => eror.message === 'unhandled error'
-  },
-  context: null // context is applied to each handler
-});
+let h = new Handler();
 
-let errors = await h.handle(
-  new Error('unhandled error'),
-  null, // optional error-related value
-  {
-    unhandledError: { // custom handler name
-      message: 'unhandled error' // error message (can be a function)
+let e = await h.handle(
+  new Error('unhandled error'), // error instance
+  null, // optional error-related value which is caused the error
+  [ // list of handler recipes
+    {
+      name: 'block',
+      message: 'unhandled error',
+      block: async () => true
     },
-    mongoUniqueness: { // built-in handler name
-      indexName: 'uniqueEmail', // handler option
-      message: 'already taken' // error message (can be a function)
+    {
+      name: 'mongoUniqueness',
+      message: 'already taken',
+      indexName: 'uniqueEmail'
     }
-  }
-); // -> [{message: 'unhandled error'}]
+  ]
+); // -> a list of HandledError instances or an empty array
 ```
 
 ## API
 
-**Handler(options)**
+**HandledError(recipe, value, code)**
+
+> Handled error class which holds information about the invalid value.
+
+| Option | Type | Required | Default | Description
+|--------|------|----------|---------|------------
+| recipe | Object | Yes | - | Handler recipe object.
+| error | Error | No | null | Error instance (e.g. new Error())
+| value | Any | No | null | Error-related value (e.g. value of a field).
+| code | Integer | No | 422 | Error status code.
+
+**Handler({firstErrorOnly, handledError, handlers, context})**
 
 > A core validation class.
 
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
 | firstErrorOnly | Boolean | No | false | When set to `true`, only the first error is handled otherwise all errors are returned.
-| errorBuilder | Function/Promise | No | (name, error, value, {message}) => message | A method for constructing a custom error message.
+| handledError | HandledError | No | HandledError | A custom HandledError class.
 | handlers | Object | No | built-in handlers | Object with custom handlers (this variable is merged with built-in handlers thus you can override a handler if you need to).
 | context | Object | No | null | A custom context reference which is applied to each handler.
 
-**Handler.prototype.handle(error, definitions):Boolean;**
+**Handler.prototype.handle(error, value, recipes)**: Boolean
 
-> Validates an error against the provided definitions.
+> Handles an error against the provided recipes.
 
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
-| error | Any | Yes | - | An error to validate.
-| value | Any | No | - | An error-related value.
-| definitions | Object | Yes | - | A configuration object describing handlers.
+| error | Any | Yes | - | Error to validate.
+| value | Any | No | null | Error-related value (e.g. value of a field).
+| recipes | Array | No | [] | A configuration object describing handlers.
 
 ### Built-in Handlers
 
@@ -79,18 +90,27 @@ let errors = await h.handle(
 |--------|------|----------|---------|------------
 | indexName | String | Yes | - | MongoDB collection's unique index name.
 
-#### blockInspect
+```js
+let recipe = {
+  name: 'mongoUniqueness',
+  message: 'is unknown error',
+  indexName: 'uniqueEmail'
+};
+```
+
+#### block
 
 > Checks if the provided block function succeeds.
 
 | Option | Type | Required | Description
 |--------|------|----------|------------
-| block | Function | Yes | Synchronous or asynchronous function (e.g. `async () => true`).
+| block | Function,Promise | Yes | Synchronous or asynchronous function (e.g. `async () => true`).
 
 ```js
-let definition = {
-  block: async (error, value, definition) => true,
-  message: 'is unknown error'
+let recipe = {
+  name: 'block',
+  message: 'is unknown error',
+  async block (error, value, definition) { return true }
 };
 ```
 

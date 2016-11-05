@@ -1,5 +1,5 @@
-const test = require('ava');
-const {Handler} = require('../dist/index');
+import test from 'ava';
+import {Handler, HandledError} from '../dist/index';
 
 test.only('Handler.handle', async (t) => {
   let error = new Error();
@@ -8,28 +8,25 @@ test.only('Handler.handle', async (t) => {
 
   let h = new Handler({
     handlers: {
-      fooError: (e) => e.message === 'foo error',
-      notFound: (e) => e.code === 404,
-      doFound: (e) => e.code === 500
+      fooError (e) { return e.message === 'foo error' },
+      notFound (e) { return e.code === 404 },
+      doFound (e) { return e.code === 500 }
     }
   });
-  let result = await h.handle(
-    error,
-    null,
-    {
-      fooError: {
-        message: 'is foo'
-      },
-      notFound: {
-        message: 'not found'
-      },
-      doFound: {
-        message: 'do found'
-      }
-    }
-  );
+  let recipes = [
+    {name: 'fooError', message: 'is foo'},
+    {name: 'notFound', message: 'not found'},
+    {name: 'doFound', message: 'do found'},
+  ];
+  let errors = await h.handle(error, null, recipes);
 
-  t.deepEqual(result, ['is foo', 'not found']);
+  t.deepEqual(errors.length, 2);
+  t.is(errors[0] instanceof HandledError, true);
+  t.is(errors[0].name, 'HandledError');
+  t.is(errors[0].message, 'is foo');
+  t.deepEqual(errors[0].recipe, recipes[0]);
+  t.deepEqual(errors[1].recipe, recipes[1]);
+  t.is(errors[0].code, 422);
 });
 
 test('Handler.handle with onlyFirstError=true', async (t) => {
@@ -40,68 +37,32 @@ test('Handler.handle with onlyFirstError=true', async (t) => {
   let h = new Handler({
     firstErrorOnly: true,
     handlers: {
-      fooError: (e) => e.message === 'foo error',
-      notFound: (e) => e.code === 404
+      fooError (e) { return e.message === 'foo error' },
+      notFound (e) { return e.code === 404 },
     }
   });
-  let result = await h.handle(
-    null,
-    null,
-    {
-      fooError: {
-        message: 'is foo'
-      },
-      notFound: {
-        message: 'not found'
-      }
-    }
-  );
+  let recipes = [
+    {name: 'fooError', message: 'is foo'},
+    {name: 'notFound', message: 'not found'}
+  ];
+  let errors = await h.handle(null, null, recipes);
 
-  t.deepEqual(result, ['is foo']);
+  t.deepEqual(errors.length, 1);
 });
 
-test('Handler.handle with custom errorBuilder', async (t) => {
-  let error = new Error();
-  error.message = 'foo error';
-  error.code = 404;
-
-  let h = new Handler({
-    errorBuilder: (e, {message}) => ({message}),
-    handlers: {
-      fooError: (e) => e.message === 'foo error'
-    }
-  });
-  let result = await h.handle(
-    null,
-    null,
-    {
-      fooError: {
-        message: 'is foo'
-      }
-    }
-  );
-
-  t.deepEqual(result, [{message: 'is foo'}]);
-});
-
-test('Handler.handle with handler message as a function', async (t) => {
+test('Handler.recipe with reciper message as a function', async (t) => {
   let error = new Error();
   error.message = 'foo error';
 
   let h = new Handler({
     handlers: {
-      fooError: (e) => e.message === 'foo error'
+      fooError (e) { return e.message === 'foo error' }
     }
   });
-  let result = await h.handle(
-    null,
-    null,
-    {
-      fooError: {
-        message: (e) => 'is foo'
-      }
-    }
-  );
+  let recipes = [
+    {name: 'fooError', message: () => 'is foo'}
+  ];
+  let errors = await h.handle(null, null, recipes);
 
-  t.deepEqual(result, ['is foo']);
+  t.deepEqual(errors[0].message, 'is foo');
 });

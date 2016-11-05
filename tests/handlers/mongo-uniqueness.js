@@ -1,5 +1,5 @@
-const test = require('ava');
-const {mongoUniqueness} = require('../../dist/handlers');
+import test from 'ava';
+import {mongoUniqueness} from '../../dist/handlers';
 
 test('fails when not matching error', (t) => {
   let error = new Error();
