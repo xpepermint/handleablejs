@@ -50,25 +50,24 @@ See the `./tests` folder for details.
 
 ## API
 
-**HandledError(recipe, error, value, code)**
+**HandledError(error, value, recipe, code)**
 
 > Handled error class which holds information about the invalid value.
 
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
-| recipe | Object | Yes | - | Handler recipe object.
 | error | Error | No | null | Error instance (e.g. new Error())
 | value | Any | No | null | Error-related value (e.g. value of a field).
+| recipe | Object | Yes | - | Handler recipe object.
 | code | Integer | No | 422 | Error status code.
 
-**Handler({firstErrorOnly, handledError, handlers, context})**
+**Handler({firstErrorOnly, handlers, context})**
 
 > A core validation class.
 
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
 | firstErrorOnly | Boolean | No | false | When set to `true`, only the first error is handled otherwise all errors are returned.
-| handledError | HandledError | No | HandledError | A custom HandledError class.
 | handlers | Object | No | built-in handlers | Object with custom handlers (this variable is merged with built-in handlers thus you can override a handler if you need to).
 | context | Object | No | null | A custom context reference which is applied to each handler.
 
@@ -77,7 +76,6 @@ import {Handler, HandledError} from 'handleable';
 
 let v = new Handler({
   firstErrorOnly: true,
-  error: HandledError,
   handlers: {
     fooError ({error}) { return error.message === 'foo error' }, // custom handler
   },
@@ -85,7 +83,17 @@ let v = new Handler({
 });
 ```
 
-**Handler.prototype.handle(error, value, recipes)**: Boolean
+**Handler.prototype.createHandledError(value, recipe)**: HandledError
+
+> Validates a value against the provided options.
+
+| Option | Type | Required | Default | Description
+|--------|------|----------|---------|------------
+| error | Any | Yes | - | Error to validate.
+| value | Any | No | null | Error-related value (e.g. value of a field).
+| recipe | Object | No | null | A configuration object describing a handler.
+
+**Handler.prototype.handle(error, value, recipes)**: Promise<HandledError[]>
 
 > Handles an error against the provided recipes.
 
@@ -100,7 +108,7 @@ let error = new Error();
 let value = 'foo';
 let recipes = [
   {
-    name: 'block', // validator name
+    name: 'block', // handler name
     message: 'is unknown error', // handler error message
     async block ({error, value, recipe}) { return true } // handler-specific property
   }

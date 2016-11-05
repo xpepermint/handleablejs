@@ -5,26 +5,25 @@ export interface RecipeObject {
     [option: string]: any;
 }
 export declare class HandledError extends Error {
-    recipe: RecipeObject;
     error: Error;
     value: any;
+    recipe: RecipeObject;
     code: number;
-    constructor(recipe: RecipeObject, error?: Error, value?: any, code?: number);
+    constructor(error?: Error, value?: any, recipe?: RecipeObject, code?: number);
 }
 export declare class Handler {
     firstErrorOnly: boolean;
-    handledError: typeof HandledError;
     handlers: {
         [reciper: string]: HandlerBlock;
     };
     context: any;
-    constructor({firstErrorOnly, handledError, handlers, context}?: {
+    constructor({firstErrorOnly, handlers, context}?: {
         firstErrorOnly?: boolean;
-        handledError?: typeof HandledError;
         handlers?: {
             [name: string]: HandlerBlock;
         };
         context?: any;
     });
+    createHandledError(error: Error, value: any, recipe: RecipeObject): HandledError;
     handle(error: Error, value?: any, recipes?: RecipeObject[]): Promise<any[]>;
 }

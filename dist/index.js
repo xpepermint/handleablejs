@@ -15,15 +15,15 @@ class HandledError extends Error {
     /*
     * Class constructor.
     */
-    constructor(recipe, error = null, value = null, code = 422) {
-        let message = typeof recipe.message === 'function'
+    constructor(error = null, value = null, recipe = null, code = 422) {
+        super();
+        this.message = typeof recipe.message === 'function'
             ? recipe.message()
             : recipe.message;
-        super(message);
         this.name = this.constructor.name;
-        this.recipe = Object.assign({}, recipe, { message });
         this.error = error;
         this.value = value;
+        this.recipe = Object.assign({}, recipe, { message: this.message });
         this.code = code;
     }
 }
@@ -35,11 +35,16 @@ class Handler {
     /*
     * Class constructor.
     */
-    constructor({ firstErrorOnly = false, handledError = HandledError, handlers = {}, context = null } = {}) {
+    constructor({ firstErrorOnly = false, handlers = {}, context = null } = {}) {
         this.firstErrorOnly = firstErrorOnly;
-        this.handledError = handledError;
         this.handlers = Object.assign({}, builtInHandlers, handlers);
         this.context = context;
+    }
+    /*
+    * Returns a new instance of HandledError instance.
+    */
+    createHandledError(error, value, recipe) {
+        return new HandledError(error, value, recipe);
     }
     /*
     * Validates the `error` against the `recipes`.
@@ -55,7 +60,7 @@ class Handler {
                 }
                 let match = yield handler.call(this.context, error, value, recipe);
                 if (match) {
-                    errors.push(new this.handledError(recipe, error, value));
+                    errors.push(this.createHandledError(error, value, recipe));
                     if (this.firstErrorOnly)
                         break;
                 }

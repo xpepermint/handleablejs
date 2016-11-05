@@ -21,9 +21,9 @@ export interface RecipeObject {
 */
 
 export class HandledError extends Error {
-  public recipe: RecipeObject;
   public error: Error;
   public value: any;
+  public recipe: RecipeObject;
   public code: number;
 
   /*
@@ -31,21 +31,21 @@ export class HandledError extends Error {
   */
 
   public constructor (
-    recipe: RecipeObject, 
     error: Error = null, 
     value: any = null, 
+    recipe: RecipeObject = null, 
     code: number = 422
   ) {
-    let message = typeof recipe.message === 'function'
+    super();
+
+    this.message = typeof recipe.message === 'function'
       ? recipe.message()
       : recipe.message;
 
-    super(message);
-
     this.name = this.constructor.name;
-    this.recipe = Object.assign({}, recipe, {message});
     this.error = error;
     this.value = value;
+    this.recipe = Object.assign({}, recipe, {message: this.message});
     this.code = code;
   }
 }
@@ -56,7 +56,6 @@ export class HandledError extends Error {
 
 export class Handler {
   public firstErrorOnly: boolean;
-  public handledError: typeof HandledError;
   public handlers: {[reciper: string]: HandlerBlock};
   public context: any;
 
@@ -66,19 +65,24 @@ export class Handler {
 
   public constructor ({
     firstErrorOnly = false,
-    handledError = HandledError,
     handlers = {},
     context = null
   }: {
     firstErrorOnly?: boolean,
-    handledError?: typeof HandledError,
     handlers?: {[name: string]: HandlerBlock},
     context?: any
   } = {}) {
     this.firstErrorOnly = firstErrorOnly;
-    this.handledError = handledError;
     this.handlers = Object.assign({}, builtInHandlers, handlers);
     this.context = context;
+  }
+
+  /*
+  * Returns a new instance of HandledError instance.
+  */
+
+  public createHandledError (error: Error, value: any, recipe: RecipeObject): HandledError {
+    return new HandledError(error, value, recipe);
   }
 
   /*
@@ -103,7 +107,7 @@ export class Handler {
       let match = await handler.call(this.context, error, value, recipe);
       if (match) {
         errors.push(
-          new this.handledError(recipe, error, value)
+          this.createHandledError(error, value, recipe)
         );
 
         if (this.firstErrorOnly) break;
