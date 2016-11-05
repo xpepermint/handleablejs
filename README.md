@@ -50,7 +50,7 @@ See the `./tests` folder for details.
 
 ## API
 
-**HandledError(recipe, value, code)**
+**HandledError(recipe, error, value, code)**
 
 > Handled error class which holds information about the invalid value.
 
@@ -72,6 +72,19 @@ See the `./tests` folder for details.
 | handlers | Object | No | built-in handlers | Object with custom handlers (this variable is merged with built-in handlers thus you can override a handler if you need to).
 | context | Object | No | null | A custom context reference which is applied to each handler.
 
+```js
+import {Handler, HandledError} from 'handleable';
+
+let v = new Handler({
+  firstErrorOnly: true,
+  error: HandledError,
+  handlers: {
+    fooError ({error}) { return error.message === 'foo error' }, // custom handler
+  },
+  context: null
+});
+```
+
 **Handler.prototype.handle(error, value, recipes)**: Boolean
 
 > Handles an error against the provided recipes.
@@ -82,23 +95,20 @@ See the `./tests` folder for details.
 | value | Any | No | null | Error-related value (e.g. value of a field).
 | recipes | Array | No | [] | A configuration object describing handlers.
 
-### Built-in Handlers
-
-#### mongoUniqueness
-
-> Checks if the error represents a MongoDB unique constraint error.
-
-| Option | Type | Required | Default | Description
-|--------|------|----------|---------|------------
-| indexName | String | Yes | - | MongoDB collection's unique index name.
-
 ```js
-let recipe = {
-  name: 'mongoUniqueness',
-  message: 'is unknown error',
-  indexName: 'uniqueEmail'
-};
+let error = new Error();
+let value = 'foo';
+let recipes = [
+  {
+    name: 'block', // validator name
+    message: 'is unknown error', // handler error message
+    async block ({error, value, recipe}) { return true } // handler-specific property
+  }
+];
+await h.handle(error, value, recipes);
 ```
+
+### Built-in Handlers
 
 #### block
 
@@ -112,7 +122,23 @@ let recipe = {
 let recipe = {
   name: 'block',
   message: 'is unknown error',
-  async block (error, value, definition) { return true }
+  async block ({error, value, recipe}) { return true }
+};
+```
+
+#### mongoUniqueness
+
+> Checks if the error represents a MongoDB unique constraint error.
+
+| Option | Type | Required | Default | Description
+|--------|------|----------|---------|------------
+| indexName | String | Yes | - | MongoDB collection's unique index name.
+
+```js
+let recipe = {
+  name: 'mongoUniqueness',
+  message: 'is unknown error',
+  indexName: 'uniqueEmail' // make sure that this index name exists in your MongoDB
 };
 ```
 
