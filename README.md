@@ -82,7 +82,7 @@ let v = new Handler({
 | value | Any | No | null | Error-related value (e.g. value of a field).
 | recipe | Object | No | null | A configuration object describing a handler.
 
-**Handler.prototype.handle(error, value, recipes)**: Promise<HandlerError[]>
+**Handler.prototype.handle(error, value, recipes)**: Promise(HandlerError[])
 
 > Handles an error against the provided recipes.
 
