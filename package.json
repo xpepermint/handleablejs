@@ -1,6 +1,6 @@
 {
   "name": "handleable",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "A library for synchronous and asynchronous error handling.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -41,6 +41,6 @@
   "license": "MIT",
   "devDependencies": {
     "ava": "0.16.x",
-    "typescript": "2.0.7"
+    "typescript": "2.0.x"
   }
 }
