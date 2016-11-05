@@ -43,23 +43,12 @@ let e = await h.handle(
       indexName: 'uniqueEmail' // handler-specific property
     }
   ]
-); // -> a list of HandledError instances or an empty array
+); // -> a list of HandlerError instances or an empty array
 ```
 
 See the `./tests` folder for details.
 
 ## API
-
-**HandledError(error, value, recipe, code)**
-
-> Handled error class which holds information about the invalid value.
-
-| Option | Type | Required | Default | Description
-|--------|------|----------|---------|------------
-| error | Error | No | null | Error instance (e.g. new Error())
-| value | Any | No | null | Error-related value (e.g. value of a field).
-| recipe | Object | Yes | - | Handler recipe object.
-| code | Integer | No | 422 | Error status code.
 
 **Handler({firstErrorOnly, handlers, context})**
 
@@ -72,7 +61,7 @@ See the `./tests` folder for details.
 | context | Object | No | null | A custom context reference which is applied to each handler.
 
 ```js
-import {Handler, HandledError} from 'handleable';
+import {Handler, HandlerError} from 'handleable';
 
 let v = new Handler({
   firstErrorOnly: true,
@@ -83,7 +72,7 @@ let v = new Handler({
 });
 ```
 
-**Handler.prototype.createHandledError(value, recipe)**: HandledError
+**Handler.prototype.createHandlerError(value, recipe)**: HandlerError
 
 > Validates a value against the provided options.
 
@@ -93,7 +82,7 @@ let v = new Handler({
 | value | Any | No | null | Error-related value (e.g. value of a field).
 | recipe | Object | No | null | A configuration object describing a handler.
 
-**Handler.prototype.handle(error, value, recipes)**: Promise<HandledError[]>
+**Handler.prototype.handle(error, value, recipes)**: Promise<HandlerError[]>
 
 > Handles an error against the provided recipes.
 
@@ -115,6 +104,17 @@ let recipes = [
 ];
 await h.handle(error, value, recipes);
 ```
+
+**HandlerError(error, value, recipe, code)**
+
+> Handled error class which holds information about the invalid value.
+
+| Option | Type | Required | Default | Description
+|--------|------|----------|---------|------------
+| error | Error | No | null | Error instance (e.g. new Error())
+| value | Any | No | null | Error-related value (e.g. value of a field).
+| recipe | Object | Yes | - | Handler recipe object.
+| code | Integer | No | 422 | Error status code.
 
 ### Built-in Handlers
 

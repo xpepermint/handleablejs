@@ -4,7 +4,7 @@ export interface RecipeObject {
     message: string | (() => string);
     [option: string]: any;
 }
-export declare class HandledError extends Error {
+export declare class HandlerError extends Error {
     error: Error;
     value: any;
     recipe: RecipeObject;
@@ -24,6 +24,6 @@ export declare class Handler {
         };
         context?: any;
     });
-    createHandledError(error: Error, value: any, recipe: RecipeObject): HandledError;
+    createHandlerError(error: Error, value: any, recipe: RecipeObject): HandlerError;
     handle(error: Error, value?: any, recipes?: RecipeObject[]): Promise<any[]>;
 }

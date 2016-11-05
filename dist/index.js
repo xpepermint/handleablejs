@@ -11,7 +11,7 @@ const builtInHandlers = require('./handlers');
 /*
 * A reciped error class.
 */
-class HandledError extends Error {
+class HandlerError extends Error {
     /*
     * Class constructor.
     */
@@ -27,7 +27,7 @@ class HandledError extends Error {
         this.code = code;
     }
 }
-exports.HandledError = HandledError;
+exports.HandlerError = HandlerError;
 /*
 * A core error handling class.
 */
@@ -41,10 +41,10 @@ class Handler {
         this.context = context;
     }
     /*
-    * Returns a new instance of HandledError instance.
+    * Returns a new instance of HandlerError instance.
     */
-    createHandledError(error, value, recipe) {
-        return new HandledError(error, value, recipe);
+    createHandlerError(error, value, recipe) {
+        return new HandlerError(error, value, recipe);
     }
     /*
     * Validates the `error` against the `recipes`.
@@ -60,7 +60,7 @@ class Handler {
                 }
                 let match = yield handler.call(this.context, error, value, recipe);
                 if (match) {
-                    errors.push(this.createHandledError(error, value, recipe));
+                    errors.push(this.createHandlerError(error, value, recipe));
                     if (this.firstErrorOnly)
                         break;
                 }

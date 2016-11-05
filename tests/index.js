@@ -1,5 +1,5 @@
 import test from 'ava';
-import {Handler, HandledError} from '../dist/index';
+import {Handler, HandlerError} from '../dist/index';
 
 test.only('Handler.handle', async (t) => {
   let error = new Error();
@@ -21,8 +21,8 @@ test.only('Handler.handle', async (t) => {
   let errors = await h.handle(error, null, recipes);
 
   t.deepEqual(errors.length, 2);
-  t.is(errors[0] instanceof HandledError, true);
-  t.is(errors[0].name, 'HandledError');
+  t.is(errors[0] instanceof HandlerError, true);
+  t.is(errors[0].name, 'HandlerError');
   t.is(errors[0].message, 'is foo');
   t.deepEqual(errors[0].recipe, recipes[0]);
   t.deepEqual(errors[1].recipe, recipes[1]);

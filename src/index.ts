@@ -20,7 +20,7 @@ export interface RecipeObject {
 * A reciped error class.
 */
 
-export class HandledError extends Error {
+export class HandlerError extends Error {
   public error: Error;
   public value: any;
   public recipe: RecipeObject;
@@ -31,9 +31,9 @@ export class HandledError extends Error {
   */
 
   public constructor (
-    error: Error = null, 
-    value: any = null, 
-    recipe: RecipeObject = null, 
+    error: Error = null,
+    value: any = null,
+    recipe: RecipeObject = null,
     code: number = 422
   ) {
     super();
@@ -78,11 +78,11 @@ export class Handler {
   }
 
   /*
-  * Returns a new instance of HandledError instance.
+  * Returns a new instance of HandlerError instance.
   */
 
-  public createHandledError (error: Error, value: any, recipe: RecipeObject): HandledError {
-    return new HandledError(error, value, recipe);
+  public createHandlerError (error: Error, value: any, recipe: RecipeObject): HandlerError {
+    return new HandlerError(error, value, recipe);
   }
 
   /*
@@ -90,8 +90,8 @@ export class Handler {
   */
 
   public async handle(
-    error: Error, 
-    value: any = null, 
+    error: Error,
+    value: any = null,
     recipes: RecipeObject[] = []
   ) {
     let errors = [];
@@ -107,7 +107,7 @@ export class Handler {
       let match = await handler.call(this.context, error, value, recipe);
       if (match) {
         errors.push(
-          this.createHandledError(error, value, recipe)
+          this.createHandlerError(error, value, recipe)
         );
 
         if (this.firstErrorOnly) break;
