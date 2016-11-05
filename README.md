@@ -33,18 +33,20 @@ let e = await h.handle(
   null, // optional error-related value which is caused the error
   [ // list of handler recipes
     {
-      name: 'block',
-      message: 'unhandled error',
-      block: async () => true
+      name: 'block', // handler name
+      message: 'unhandled error', // handler error message
+      block: async () => true // handler-specific property
     },
     {
-      name: 'mongoUniqueness',
-      message: 'already taken',
-      indexName: 'uniqueEmail'
+      name: 'mongoUniqueness', // handler name
+      message: 'already taken', // handler error message
+      indexName: 'uniqueEmail' // handler-specific property
     }
   ]
 ); // -> a list of HandledError instances or an empty array
 ```
+
+See the `./tests` folder for details.
 
 ## API
 
