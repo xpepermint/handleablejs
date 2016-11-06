@@ -17,10 +17,29 @@ class HandlerError extends Error {
     */
     constructor(handler, message = null, code = 422) {
         super(message);
-        this.name = this.constructor.name;
-        this.handler = handler;
-        this.message = message;
-        this.code = code;
+        Object.defineProperty(this, 'name', {
+            value: this.constructor.name,
+            writable: true
+        });
+        Object.defineProperty(this, 'message', {
+            value: message,
+            writable: true
+        });
+        Object.defineProperty(this, 'handler', {
+            value: handler,
+            writable: true
+        });
+        Object.defineProperty(this, 'code', {
+            value: code,
+            writable: true
+        });
+    }
+    /*
+    * Returns error data.
+    */
+    toObject() {
+        let { name, message, handler, code } = this;
+        return { name, message, handler, code };
     }
 }
 exports.HandlerError = HandlerError;
@@ -58,7 +77,7 @@ class Handler {
     /*
     * Validates the `error` against the `recipes`.
     */
-    handle(error, value = null, recipes = []) {
+    handle(error, recipes = []) {
         return __awaiter(this, void 0, void 0, function* () {
             let errors = [];
             for (let recipe of recipes) {
@@ -67,7 +86,7 @@ class Handler {
                 if (!handler) {
                     throw new Error(`Unknown handler ${name}`);
                 }
-                let match = yield handler.call(this.context, error, value, recipe);
+                let match = yield handler.call(this.context, error, recipe);
                 if (match) {
                     errors.push(this._createHandlerError(recipe));
                     if (this.firstErrorOnly)

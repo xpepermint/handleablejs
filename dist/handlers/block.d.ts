@@ -1,1 +1,1 @@
-export declare function block(error: Error, value: any, recipe?: any): boolean | Promise<boolean>;
+export declare function block(error: Error, recipe?: any): boolean | Promise<boolean>;

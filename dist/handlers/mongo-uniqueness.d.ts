@@ -1,1 +1,1 @@
-export declare function mongoUniqueness(error: any, value: any, recipe: any): boolean;
+export declare function mongoUniqueness(error: any, recipe: any): boolean;

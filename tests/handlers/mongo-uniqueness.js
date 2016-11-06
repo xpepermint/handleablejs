@@ -12,5 +12,5 @@ test('succeeds when matching error', (t) => {
   let error = new Error();
   error.message = 'E11000 duplicate key error index: test.users.$uniqueEmail dup key: { : \"me@domain.com\" }';
 
-  t.is(mongoUniqueness(error, 'me@domain.com', {indexName: 'uniqueEmail'}), true);
+  t.is(mongoUniqueness(error, {indexName: 'uniqueEmail'}), true);
 });

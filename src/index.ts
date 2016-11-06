@@ -36,10 +36,31 @@ export class HandlerError extends Error {
   ) {
     super(message);
 
-    this.name = this.constructor.name;
-    this.handler = handler;
-    this.message = message;
-    this.code = code;
+    Object.defineProperty(this, 'name', { // class name
+      value: this.constructor.name,
+      writable: true
+    });
+    Object.defineProperty(this, 'message', { // validation error message
+      value: message,
+      writable: true
+    });
+    Object.defineProperty(this, 'handler', { // validator name
+      value: handler,
+      writable: true
+    });
+    Object.defineProperty(this, 'code', { // error code
+      value: code,
+      writable: true
+    });
+  }
+
+  /*
+  * Returns error data.
+  */
+
+  toObject () {
+    let {name, message, handler, code} = this;
+    return {name, message, handler, code};
   }
 }
 
@@ -101,7 +122,6 @@ export class Handler {
 
   public async handle(
     error: Error,
-    value: any = null,
     recipes: RecipeObject[] = []
   ) {
     let errors = [];
@@ -114,7 +134,7 @@ export class Handler {
         throw new Error(`Unknown handler ${name}`);
       }
 
-      let match = await handler.call(this.context, error, value, recipe);
+      let match = await handler.call(this.context, error, recipe);
       if (match) {
         errors.push(
           this._createHandlerError(recipe)

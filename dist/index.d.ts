@@ -9,6 +9,12 @@ export declare class HandlerError extends Error {
     message: string;
     code: number;
     constructor(handler: string, message?: string, code?: number);
+    toObject(): {
+        name: string;
+        message: string;
+        handler: string;
+        code: number;
+    };
 }
 export declare class Handler {
     firstErrorOnly: boolean;
@@ -25,5 +31,5 @@ export declare class Handler {
     });
     protected _createHandlerError(recipe: RecipeObject): HandlerError;
     protected _createString(template: any, data: any): string;
-    handle(error: Error, value?: any, recipes?: RecipeObject[]): Promise<any[]>;
+    handle(error: Error, recipes?: RecipeObject[]): Promise<any[]>;
 }

@@ -30,7 +30,6 @@ let h = new Handler();
 
 let e = await h.handle(
   new Error('unhandled error'), // error instance
-  null, // optional error-related value which is caused the error
   [ // list of handler recipes
     {
       handler: 'block', // handler name
@@ -73,27 +72,25 @@ let v = new Handler({
 });
 ```
 
-**Handler.prototype.handle(error, value, recipes)**: Promise(HandlerError[])
+**Handler.prototype.handle(error, recipes)**: Promise(HandlerError[])
 
 > Handles an error against the provided recipes.
 
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
 | error | Any | Yes | - | Error to validate.
-| value | Any | No | null | Error-related value (e.g. value of a field).
 | recipes | Array | No | [] | A configuration object describing handlers.
 
 ```js
 let error = new Error();
-let value = 'foo';
 let recipe = {
   handler: 'block', // [required] handler name
   message: '%{foo} is unknown error', // [required] handler error message (note that you can insert related recipe values by using the %{key} syntax)
-  async block ({error, value, recipe}) { return true } // [handler specific] handler-specific property
+  async block ({error, recipe}) { return true } // [handler specific] handler-specific property
   foo: 'bar' // [optional] a custom variable
 };
 let recipes = [recipe];
-await h.handle(error, value, recipes);
+await h.handle(error, recipes);
 ```
 
 **HandlerError(handler, message, error, code)**
@@ -121,7 +118,7 @@ await h.handle(error, value, recipes);
 let recipe = {
   handler: 'block',
   message: 'is unknown error',
-  async block ({error, value, recipe}) { return true }
+  async block ({error, recipe}) { return true }
 };
 ```
 
