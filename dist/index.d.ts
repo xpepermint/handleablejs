@@ -1,15 +1,15 @@
 export declare type HandlerBlock = (error: Error, value: any, recipe: any) => boolean | Promise<boolean>;
 export interface RecipeObject {
-    name: string;
+    handler: string;
     message: string | (() => string);
     [option: string]: any;
 }
 export declare class HandlerError extends Error {
     error: Error;
-    value: any;
-    recipe: RecipeObject;
+    handler: string;
+    message: string;
     code: number;
-    constructor(error?: Error, value?: any, recipe?: RecipeObject, code?: number);
+    constructor(error?: Error, handler?: string, message?: string, code?: number);
 }
 export declare class Handler {
     firstErrorOnly: boolean;
@@ -24,6 +24,7 @@ export declare class Handler {
         };
         context?: any;
     });
-    protected _createHandlerError(error: Error, value: any, recipe: RecipeObject): HandlerError;
+    protected _createHandlerError(error: Error, recipe: RecipeObject): HandlerError;
+    protected _createString(template: any, data: any): string;
     handle(error: Error, value?: any, recipes?: RecipeObject[]): Promise<any[]>;
 }

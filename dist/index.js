@@ -15,15 +15,12 @@ class HandlerError extends Error {
     /*
     * Class constructor.
     */
-    constructor(error = null, value = null, recipe = null, code = 422) {
-        super();
-        this.message = typeof recipe.message === 'function'
-            ? recipe.message()
-            : recipe.message;
+    constructor(error = null, handler = null, message = null, code = 422) {
+        super(message);
         this.name = this.constructor.name;
         this.error = error;
-        this.value = value;
-        this.recipe = Object.assign({}, recipe, { message: this.message });
+        this.handler = handler;
+        this.message = message;
         this.code = code;
     }
 }
@@ -43,8 +40,21 @@ class Handler {
     /*
     * Returns a new instance of HandlerError instance.
     */
-    _createHandlerError(error, value, recipe) {
-        return new HandlerError(error, value, recipe);
+    _createHandlerError(error, recipe) {
+        let message = typeof recipe.message === 'function'
+            ? recipe.message()
+            : recipe.message;
+        message = this._createString(message, recipe); // apply variables to a message
+        return new HandlerError(error, recipe.handler, message);
+    }
+    /*
+    * Replaces variables in a string (e.g. `%{variable}`) with object key values.
+    */
+    _createString(template, data) {
+        for (let key in data) {
+            template = template.replace(`%{${key}}`, data[key]);
+        }
+        return template;
     }
     /*
     * Validates the `error` against the `recipes`.
@@ -53,14 +63,14 @@ class Handler {
         return __awaiter(this, void 0, void 0, function* () {
             let errors = [];
             for (let recipe of recipes) {
-                let { name } = recipe;
+                let name = recipe.handler;
                 let handler = this.handlers[name];
                 if (!handler) {
                     throw new Error(`Unknown handler ${name}`);
                 }
                 let match = yield handler.call(this.context, error, value, recipe);
                 if (match) {
-                    errors.push(this._createHandlerError(error, value, recipe));
+                    errors.push(this._createHandlerError(error, recipe));
                     if (this.firstErrorOnly)
                         break;
                 }

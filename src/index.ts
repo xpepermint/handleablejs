@@ -11,7 +11,7 @@ export type HandlerBlock = (error: Error, value: any, recipe: any) => boolean | 
 */
 
 export interface RecipeObject {
-  name: string; // handler name
+  handler: string; // handler name
   message: string | (() => string);
   [option: string]: any; // aditional properties
 }
@@ -22,8 +22,8 @@ export interface RecipeObject {
 
 export class HandlerError extends Error {
   public error: Error;
-  public value: any;
-  public recipe: RecipeObject;
+  public handler: string;
+  public message: string;
   public code: number;
 
   /*
@@ -32,20 +32,16 @@ export class HandlerError extends Error {
 
   public constructor (
     error: Error = null,
-    value: any = null,
-    recipe: RecipeObject = null,
+    handler: string = null,
+    message: string = null,
     code: number = 422
   ) {
-    super();
-
-    this.message = typeof recipe.message === 'function'
-      ? recipe.message()
-      : recipe.message;
+    super(message);
 
     this.name = this.constructor.name;
     this.error = error;
-    this.value = value;
-    this.recipe = Object.assign({}, recipe, {message: this.message});
+    this.handler = handler;
+    this.message = message;
     this.code = code;
   }
 }
@@ -81,8 +77,25 @@ export class Handler {
   * Returns a new instance of HandlerError instance.
   */
 
-  protected _createHandlerError (error: Error, value: any, recipe: RecipeObject): HandlerError {
-    return new HandlerError(error, value, recipe);
+  protected _createHandlerError (error: Error, recipe: RecipeObject): HandlerError {
+    let message = typeof recipe.message === 'function'
+      ? recipe.message()
+      : recipe.message;
+
+    message = this._createString(message, recipe); // apply variables to a message
+
+    return new HandlerError(error, recipe.handler, message);
+  }
+
+  /*
+  * Replaces variables in a string (e.g. `%{variable}`) with object key values.
+  */
+
+  protected _createString (template, data): string {
+    for (let key in data) {
+      template = template.replace(`%{${key}}`, data[key]);
+    }
+    return template;
   }
 
   /*
@@ -97,7 +110,7 @@ export class Handler {
     let errors = [];
 
     for (let recipe of recipes) {
-      let {name} = recipe;
+      let name = recipe.handler;
 
       let handler = this.handlers[name];
       if (!handler) {
@@ -107,7 +120,7 @@ export class Handler {
       let match = await handler.call(this.context, error, value, recipe);
       if (match) {
         errors.push(
-          this._createHandlerError(error, value, recipe)
+          this._createHandlerError(error, recipe)
         );
 
         if (this.firstErrorOnly) break;
