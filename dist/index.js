@@ -43,7 +43,7 @@ class Handler {
     /*
     * Returns a new instance of HandlerError instance.
     */
-    createHandlerError(error, value, recipe) {
+    _createHandlerError(error, value, recipe) {
         return new HandlerError(error, value, recipe);
     }
     /*
@@ -60,7 +60,7 @@ class Handler {
                 }
                 let match = yield handler.call(this.context, error, value, recipe);
                 if (match) {
-                    errors.push(this.createHandlerError(error, value, recipe));
+                    errors.push(this._createHandlerError(error, value, recipe));
                     if (this.firstErrorOnly)
                         break;
                 }

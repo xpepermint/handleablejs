@@ -81,7 +81,7 @@ export class Handler {
   * Returns a new instance of HandlerError instance.
   */
 
-  public createHandlerError (error: Error, value: any, recipe: RecipeObject): HandlerError {
+  protected _createHandlerError (error: Error, value: any, recipe: RecipeObject): HandlerError {
     return new HandlerError(error, value, recipe);
   }
 
@@ -107,7 +107,7 @@ export class Handler {
       let match = await handler.call(this.context, error, value, recipe);
       if (match) {
         errors.push(
-          this.createHandlerError(error, value, recipe)
+          this._createHandlerError(error, value, recipe)
         );
 
         if (this.firstErrorOnly) break;

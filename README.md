@@ -72,16 +72,6 @@ let v = new Handler({
 });
 ```
 
-**Handler.prototype.createHandlerError(value, recipe)**: HandlerError
-
-> Validates a value against the provided options.
-
-| Option | Type | Required | Default | Description
-|--------|------|----------|---------|------------
-| error | Any | Yes | - | Error to validate.
-| value | Any | No | null | Error-related value (e.g. value of a field).
-| recipe | Object | No | null | A configuration object describing a handler.
-
 **Handler.prototype.handle(error, value, recipes)**: Promise(HandlerError[])
 
 > Handles an error against the provided recipes.
