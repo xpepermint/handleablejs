@@ -7,9 +7,8 @@ export interface RecipeObject {
 export declare class HandlerError extends Error {
     handler: string;
     message: string;
-    error: Error;
     code: number;
-    constructor(handler: string, message?: string, error?: Error, code?: number);
+    constructor(handler: string, message?: string, code?: number);
 }
 export declare class Handler {
     firstErrorOnly: boolean;
@@ -24,7 +23,7 @@ export declare class Handler {
         };
         context?: any;
     });
-    protected _createHandlerError(error: Error, recipe: RecipeObject): HandlerError;
+    protected _createHandlerError(recipe: RecipeObject): HandlerError;
     protected _createString(template: any, data: any): string;
     handle(error: Error, value?: any, recipes?: RecipeObject[]): Promise<any[]>;
 }

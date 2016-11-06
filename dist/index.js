@@ -15,12 +15,11 @@ class HandlerError extends Error {
     /*
     * Class constructor.
     */
-    constructor(handler, message = null, error = null, code = 422) {
+    constructor(handler, message = null, code = 422) {
         super(message);
         this.name = this.constructor.name;
         this.handler = handler;
         this.message = message;
-        this.error = error;
         this.code = code;
     }
 }
@@ -40,12 +39,12 @@ class Handler {
     /*
     * Returns a new instance of HandlerError instance.
     */
-    _createHandlerError(error, recipe) {
+    _createHandlerError(recipe) {
         let message = typeof recipe.message === 'function'
             ? recipe.message()
             : recipe.message;
         message = this._createString(message, recipe); // apply variables to a message
-        return new HandlerError(recipe.handler, message, error);
+        return new HandlerError(recipe.handler, message);
     }
     /*
     * Replaces variables in a string (e.g. `%{variable}`) with object key values.
@@ -70,7 +69,7 @@ class Handler {
                 }
                 let match = yield handler.call(this.context, error, value, recipe);
                 if (match) {
-                    errors.push(this._createHandlerError(error, recipe));
+                    errors.push(this._createHandlerError(recipe));
                     if (this.firstErrorOnly)
                         break;
                 }

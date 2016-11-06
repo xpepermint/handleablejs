@@ -23,7 +23,6 @@ export interface RecipeObject {
 export class HandlerError extends Error {
   public handler: string;
   public message: string;
-  public error: Error;
   public code: number;
 
   /*
@@ -33,7 +32,6 @@ export class HandlerError extends Error {
   public constructor (
     handler: string,
     message: string = null,
-    error: Error = null,
     code: number = 422
   ) {
     super(message);
@@ -41,7 +39,6 @@ export class HandlerError extends Error {
     this.name = this.constructor.name;
     this.handler = handler;
     this.message = message;
-    this.error = error;
     this.code = code;
   }
 }
@@ -77,14 +74,14 @@ export class Handler {
   * Returns a new instance of HandlerError instance.
   */
 
-  protected _createHandlerError (error: Error, recipe: RecipeObject): HandlerError {
+  protected _createHandlerError (recipe: RecipeObject): HandlerError {
     let message = typeof recipe.message === 'function'
       ? recipe.message()
       : recipe.message;
 
     message = this._createString(message, recipe); // apply variables to a message
 
-    return new HandlerError(recipe.handler, message, error);
+    return new HandlerError(recipe.handler, message);
   }
 
   /*
@@ -120,7 +117,7 @@ export class Handler {
       let match = await handler.call(this.context, error, value, recipe);
       if (match) {
         errors.push(
-          this._createHandlerError(error, recipe)
+          this._createHandlerError(recipe)
         );
 
         if (this.firstErrorOnly) break;
