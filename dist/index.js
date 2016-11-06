@@ -15,12 +15,12 @@ class HandlerError extends Error {
     /*
     * Class constructor.
     */
-    constructor(error = null, handler = null, message = null, code = 422) {
+    constructor(handler, message = null, error = null, code = 422) {
         super(message);
         this.name = this.constructor.name;
-        this.error = error;
         this.handler = handler;
         this.message = message;
+        this.error = error;
         this.code = code;
     }
 }
@@ -45,7 +45,7 @@ class Handler {
             ? recipe.message()
             : recipe.message;
         message = this._createString(message, recipe); // apply variables to a message
-        return new HandlerError(error, recipe.handler, message);
+        return new HandlerError(recipe.handler, message, error);
     }
     /*
     * Replaces variables in a string (e.g. `%{variable}`) with object key values.

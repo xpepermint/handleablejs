@@ -5,11 +5,11 @@ export interface RecipeObject {
     [option: string]: any;
 }
 export declare class HandlerError extends Error {
-    error: Error;
     handler: string;
     message: string;
+    error: Error;
     code: number;
-    constructor(error?: Error, handler?: string, message?: string, code?: number);
+    constructor(handler: string, message?: string, error?: Error, code?: number);
 }
 export declare class Handler {
     firstErrorOnly: boolean;

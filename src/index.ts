@@ -21,9 +21,9 @@ export interface RecipeObject {
 */
 
 export class HandlerError extends Error {
-  public error: Error;
   public handler: string;
   public message: string;
+  public error: Error;
   public code: number;
 
   /*
@@ -31,17 +31,17 @@ export class HandlerError extends Error {
   */
 
   public constructor (
-    error: Error = null,
-    handler: string = null,
+    handler: string,
     message: string = null,
+    error: Error = null,
     code: number = 422
   ) {
     super(message);
 
     this.name = this.constructor.name;
-    this.error = error;
     this.handler = handler;
     this.message = message;
+    this.error = error;
     this.code = code;
   }
 }
@@ -84,7 +84,7 @@ export class Handler {
 
     message = this._createString(message, recipe); // apply variables to a message
 
-    return new HandlerError(error, recipe.handler, message);
+    return new HandlerError(recipe.handler, message, error);
   }
 
   /*

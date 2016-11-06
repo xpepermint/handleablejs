@@ -33,12 +33,13 @@ let e = await h.handle(
   null, // optional error-related value which is caused the error
   [ // list of handler recipes
     {
-      name: 'block', // handler name
-      message: 'unhandled error', // handler error message
-      block: async () => true // handler-specific property
+      handler: 'block', // handler name
+      message: '%{foo} unhandled error', // handler error message
+      block: async () => true // handler-specific property,
+      foo: 'bar' // custom variable for the message
     },
     {
-      name: 'mongoUniqueness', // handler name
+      handler: 'mongoUniqueness', // handler name
       message: 'already taken', // handler error message
       indexName: 'uniqueEmail' // handler-specific property
     }
@@ -85,25 +86,25 @@ let v = new Handler({
 ```js
 let error = new Error();
 let value = 'foo';
-let recipes = [
-  {
-    name: 'block', // handler name
-    message: 'is unknown error', // handler error message
-    async block ({error, value, recipe}) { return true } // handler-specific property
-  }
-];
+let recipe = {
+  handler: 'block', // [required] handler name
+  message: '%{foo} is unknown error', // [required] handler error message (note that you can insert related recipe values by using the %{key} syntax)
+  async block ({error, value, recipe}) { return true } // [handler specific] handler-specific property
+  foo: 'bar' // [optional] a custom variable
+};
+let recipes = [recipe];
 await h.handle(error, value, recipes);
 ```
 
-**HandlerError(error, value, recipe, code)**
+**HandlerError(handler, message, error, code)**
 
-> Handled error class which holds information about the invalid value.
+> Handled error class which holds information about the handled error.
 
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
-| error | Error | No | null | Error instance (e.g. new Error())
-| value | Any | No | null | Error-related value (e.g. value of a field).
-| recipe | Object | Yes | - | Handler recipe object.
+| handler | String | Yes | - | Handler name.
+| message | String | No | null | Handler error message.
+| error | Error | No | null | The original handled Error (e.g. new Error())
 | code | Integer | No | 422 | Error status code.
 
 ### Built-in Handlers
@@ -118,7 +119,7 @@ await h.handle(error, value, recipes);
 
 ```js
 let recipe = {
-  name: 'block',
+  handler: 'block',
   message: 'is unknown error',
   async block ({error, value, recipe}) { return true }
 };
@@ -134,7 +135,7 @@ let recipe = {
 
 ```js
 let recipe = {
-  name: 'mongoUniqueness',
+  handler: 'mongoUniqueness',
   message: 'is unknown error',
   indexName: 'uniqueEmail' // make sure that this index name exists in your MongoDB
 };
