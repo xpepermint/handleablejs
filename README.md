@@ -93,7 +93,7 @@ let recipes = [recipe];
 await h.handle(error, recipes);
 ```
 
-**HandlerError(handler, message, error, code)**
+**HandlerError(handler, message, code)**
 
 > Handled error class which holds information about the handled error.
 
@@ -101,7 +101,6 @@ await h.handle(error, recipes);
 |--------|------|----------|---------|------------
 | handler | String | Yes | - | Handler name.
 | message | String | No | null | Handler error message.
-| error | Error | No | null | The original handled Error (e.g. new Error())
 | code | Integer | No | 422 | Error status code.
 
 ### Built-in Handlers
