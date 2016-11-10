@@ -24,5 +24,5 @@ export declare class Handler {
     });
     protected _createHandlerError(recipe: RecipeObject): HandlerError;
     protected _createString(template: any, data: any): string;
-    handle(error: Error, recipes?: RecipeObject[]): Promise<any[]>;
+    handle(error: Error, recipes?: RecipeObject[]): Promise<HandlerError[]>;
 }
