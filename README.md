@@ -43,7 +43,7 @@ let e = await h.handle(
       indexName: 'uniqueEmail' // handler-specific property
     }
   ]
-); // -> a list of HandlerError instances or an empty array
+); // -> a list of errors
 ```
 
 See the `./tests` folder for details.
@@ -61,7 +61,7 @@ See the `./tests` folder for details.
 | context | Object | No | null | A custom context reference which is applied to each handler.
 
 ```js
-import {Handler, HandlerError} from 'handleable';
+import {Handler} from 'handleable';
 
 let v = new Handler({
   firstErrorOnly: true,
@@ -72,7 +72,7 @@ let v = new Handler({
 });
 ```
 
-**Handler.prototype.handle(error, recipes)**: Promise(HandlerError[])
+**Handler.prototype.handle(error, recipes)**: Promise(Object[])
 
 > Handles an error against the provided recipes.
 
@@ -92,16 +92,6 @@ let recipe = {
 let recipes = [recipe];
 await h.handle(error, recipes);
 ```
-
-**HandlerError(handler, message, code)**
-
-> Handled error class which holds information about the handled error.
-
-| Option | Type | Required | Default | Description
-|--------|------|----------|---------|------------
-| handler | String | Yes | - | Handler name.
-| message | String | No | null | Handler error message.
-| code | Integer | No | 422 | Error status code.
 
 ### Built-in Handlers
 
