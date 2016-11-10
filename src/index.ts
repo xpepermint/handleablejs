@@ -17,51 +17,13 @@ export interface RecipeObject {
 }
 
 /*
-* A reciped error class.
+* Definition of an error object.
 */
 
-export class HandlerError extends Error {
-  public handler: string;
-  public message: string;
-  public code: number;
-
-  /*
-  * Class constructor.
-  */
-
-  public constructor (
-    handler: string,
-    message: string = null,
-    code: number = 422
-  ) {
-    super(message);
-
-    Object.defineProperty(this, 'name', { // class name
-      value: this.constructor.name,
-      writable: true
-    });
-    Object.defineProperty(this, 'message', { // validation error message
-      value: message,
-      writable: true
-    });
-    Object.defineProperty(this, 'handler', { // validator name
-      value: handler,
-      writable: true
-    });
-    Object.defineProperty(this, 'code', { // error code
-      value: code,
-      writable: true
-    });
-  }
-
-  /*
-  * Returns error data.
-  */
-
-  toObject () {
-    let {name, message, handler, code} = this;
-    return {name, message, handler, code};
-  }
+export interface HandlerError {
+  handler: string;
+  message: string;
+  code: number;
 }
 
 /*
@@ -96,13 +58,14 @@ export class Handler {
   */
 
   protected _createHandlerError (recipe: RecipeObject): HandlerError {
+    let {handler, code = 422} = recipe;
+
     let message = typeof recipe.message === 'function'
       ? recipe.message()
       : recipe.message;
-
     message = this._createString(message, recipe); // apply variables to a message
 
-    return new HandlerError(recipe.handler, message);
+    return {handler, message, code};
   }
 
   /*

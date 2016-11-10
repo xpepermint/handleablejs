@@ -4,17 +4,10 @@ export interface RecipeObject {
     message: string | (() => string);
     [option: string]: any;
 }
-export declare class HandlerError extends Error {
+export interface HandlerError {
     handler: string;
     message: string;
     code: number;
-    constructor(handler: string, message?: string, code?: number);
-    toObject(): {
-        name: string;
-        message: string;
-        handler: string;
-        code: number;
-    };
 }
 export declare class Handler {
     firstErrorOnly: boolean;

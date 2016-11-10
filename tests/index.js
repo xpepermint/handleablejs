@@ -1,10 +1,7 @@
 import test from 'ava';
-import {
-  Handler,
-  HandlerError
-} from '../dist/index';
+import {Handler} from '../dist/index';
 
-test('Handler.handle should return a list of HandlerError instances', async (t) => {
+test('Handler.handle should return a list of errors', async (t) => {
   let error = new Error('foo error');
   error.code = 404;
 
@@ -23,8 +20,6 @@ test('Handler.handle should return a list of HandlerError instances', async (t) 
   let errors = await h.handle(error, recipes);
 
   t.deepEqual(errors.length, 2);
-  t.is(errors[0] instanceof HandlerError, true);
-  t.is(errors[0].name, 'HandlerError');
   t.is(errors[0].handler, 'fooError');
   t.is(errors[0].message, 'is foo');
   t.is(errors[0].code, 422);
@@ -48,21 +43,6 @@ test('Handler.handle with onlyFirstError=true should return only one error', asy
   let errors = await h.handle(error, recipes);
 
   t.deepEqual(errors.length, 1);
-});
-
-test('HandlerError should not expose properties', async (t) => {
-  let e = new HandlerError();
-  t.deepEqual(Object.keys(e), []);
-});
-
-test('HandlerError.toObject should return error data', async (t) => {
-  let e = new HandlerError('foo', 'bar');
-  t.deepEqual(e.toObject(), {
-    name: 'HandlerError',
-    message: 'bar',
-    handler: 'foo',
-    code: 422
-  });
 });
 
 test('recipe message can be a function', async (t) => {

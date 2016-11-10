@@ -9,41 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const builtInHandlers = require('./handlers');
 /*
-* A reciped error class.
-*/
-class HandlerError extends Error {
-    /*
-    * Class constructor.
-    */
-    constructor(handler, message = null, code = 422) {
-        super(message);
-        Object.defineProperty(this, 'name', {
-            value: this.constructor.name,
-            writable: true
-        });
-        Object.defineProperty(this, 'message', {
-            value: message,
-            writable: true
-        });
-        Object.defineProperty(this, 'handler', {
-            value: handler,
-            writable: true
-        });
-        Object.defineProperty(this, 'code', {
-            value: code,
-            writable: true
-        });
-    }
-    /*
-    * Returns error data.
-    */
-    toObject() {
-        let { name, message, handler, code } = this;
-        return { name, message, handler, code };
-    }
-}
-exports.HandlerError = HandlerError;
-/*
 * A core error handling class.
 */
 class Handler {
@@ -59,11 +24,12 @@ class Handler {
     * Returns a new instance of HandlerError instance.
     */
     _createHandlerError(recipe) {
+        let { handler, code = 422 } = recipe;
         let message = typeof recipe.message === 'function'
             ? recipe.message()
             : recipe.message;
         message = this._createString(message, recipe); // apply variables to a message
-        return new HandlerError(recipe.handler, message);
+        return { handler, message, code };
     }
     /*
     * Replaces variables in a string (e.g. `%{variable}`) with object key values.
