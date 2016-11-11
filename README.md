@@ -4,7 +4,7 @@
 
 > A library for synchronous and asynchronous error handling.
 
-This is a light weight open source package, for use on **server** or in **browser** (using module bundler). The source code is available on [GitHub](https://github.com/xpepermint/handleablejs) where you can also find our [issue tracker](https://github.com/xpepermint/handleablejs/issues).
+This is a light weight open source package for use on **server** or in **browser** (using module bundler). The source code is available on [GitHub](https://github.com/xpepermint/handleablejs) where you can also find our [issue tracker](https://github.com/xpepermint/handleablejs/issues).
 
 ## Related Projects
 
