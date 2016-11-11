@@ -1,6 +1,6 @@
 {
   "name": "handleable",
-  "version": "0.15.1",
+  "version": "0.15.2",
   "description": "A library for synchronous and asynchronous error handling.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
