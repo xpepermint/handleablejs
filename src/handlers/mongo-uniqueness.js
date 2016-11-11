@@ -1,4 +1,4 @@
-export function mongoUniqueness (error: any, recipe: any) {
+export function mongoUniqueness (error, recipe) {
   if (!error || !recipe) return false;
 
   let matches = (

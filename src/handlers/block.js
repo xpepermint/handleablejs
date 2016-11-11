@@ -1,4 +1,4 @@
-export function block (error: Error, recipe?: any): boolean | Promise<boolean> {
+export function block (error, recipe) {
   if (!error || !recipe) return false;
 
   if (recipe.block) {

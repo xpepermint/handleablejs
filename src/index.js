@@ -1,53 +1,16 @@
 import * as builtInHandlers from './handlers';
 
 /*
-* Definition of the handler block method.
-*/
-
-export type HandlerBlock = (error: Error, value: any, recipe: any) => boolean | Promise<boolean>;
-
-/*
-* Definition of the recipe object for a handler.
-*/
-
-export interface RecipeObject {
-  handler: string; // handler name
-  message: string | (() => string);
-  [option: string]: any; // aditional properties
-}
-
-/*
-* Definition of an error object.
-*/
-
-export interface HandlerError {
-  handler: string;
-  message: string;
-  code: number;
-}
-
-/*
 * A core error handling class.
 */
 
 export class Handler {
-  public firstErrorOnly: boolean;
-  public handlers: {[reciper: string]: HandlerBlock};
-  public context: any;
 
   /*
   * Class constructor.
   */
 
-  public constructor ({
-    firstErrorOnly = false,
-    handlers = {},
-    context = null
-  }: {
-    firstErrorOnly?: boolean,
-    handlers?: {[name: string]: HandlerBlock},
-    context?: any
-  } = {}) {
+  constructor ({firstErrorOnly = false, handlers = {}, context = null} = {}) {
     this.firstErrorOnly = firstErrorOnly;
     this.handlers = Object.assign({}, builtInHandlers, handlers);
     this.context = context;
@@ -57,7 +20,7 @@ export class Handler {
   * Returns a new instance of HandlerError instance.
   */
 
-  protected _createHandlerError (recipe: RecipeObject): HandlerError {
+  _createHandlerError (recipe) {
     let {handler, code = 422} = recipe;
 
     let message = typeof recipe.message === 'function'
@@ -72,7 +35,7 @@ export class Handler {
   * Replaces variables in a string (e.g. `%{variable}`) with object key values.
   */
 
-  protected _createString (template, data): string {
+  _createString (template, data) {
     for (let key in data) {
       template = template.replace(`%{${key}}`, data[key]);
     }
@@ -83,10 +46,7 @@ export class Handler {
   * Validates the `error` against the `recipes`.
   */
 
-  public async handle(
-    error: Error,
-    recipes: RecipeObject[] = []
-  ) {
+  async handle (error, recipes = []) {
     let errors = [];
 
     for (let recipe of recipes) {
