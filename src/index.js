@@ -50,8 +50,13 @@ export class Handler {
     let errors = [];
 
     for (let recipe of recipes) {
-      let name = recipe.handler;
+      let condition = recipe.condition;
+      if (condition) {
+        let result = await condition.call(this.context, error, recipe);
+        if (!result) continue;
+      }
 
+      let name = recipe.handler;
       let handler = this.handlers[name];
       if (!handler) {
         throw new Error(`Unknown handler ${name}`);

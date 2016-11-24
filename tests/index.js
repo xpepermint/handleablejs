@@ -1,7 +1,7 @@
 import test from 'ava';
 import {Handler} from '../dist/index';
 
-test('Handler.handle should return a list of errors', async (t) => {
+test('method `handle` should return a list of errors', async (t) => {
   let error = new Error('foo error');
   error.code = 404;
 
@@ -25,7 +25,7 @@ test('Handler.handle should return a list of errors', async (t) => {
   t.is(errors[0].code, 422);
 });
 
-test('Handler.handle with onlyFirstError=true should return only one error', async (t) => {
+test('method `handle` with onlyFirstError=true should return only one error', async (t) => {
   let error = new Error('foo error');
   error.code = 404;
 
@@ -45,7 +45,7 @@ test('Handler.handle with onlyFirstError=true should return only one error', asy
   t.deepEqual(errors.length, 1);
 });
 
-test('recipe message can be a function', async (t) => {
+test('recipe `message` can be a function', async (t) => {
   let error = new Error();
   error.message = 'foo error';
 
@@ -62,7 +62,7 @@ test('recipe message can be a function', async (t) => {
   t.deepEqual(errors[0].message, 'is foo');
 });
 
-test('recipe message variables %{...} should be replaced with related recipe variables', async (t) => {
+test('recipe `message` variables %{...} should be replaced with related recipe variables', async (t) => {
   let error = new Error();
   error.message = 'foo error';
 
@@ -77,4 +77,23 @@ test('recipe message variables %{...} should be replaced with related recipe var
   let errors = await h.handle(error, recipes);
 
   t.deepEqual(errors[0].message, 'bar is required');
+});
+
+test('recipe `condition` key can switch off the handling', async (t) => {
+  let error = new Error();
+  error.message = 'foo error';
+
+  let h = new Handler({
+    handlers: {
+      fooError (e) { return e.message === 'foo error' }
+    }
+  });
+  let recipes = [
+    {handler: 'fooError', message: () => 'is foo', condition: () => true},
+    {handler: 'fooError', message: () => 'is foo', condition: () => false},
+    {handler: 'fooError', message: () => 'is foo'}
+  ];
+  let errors = await h.handle(error, recipes);
+
+  t.deepEqual(errors.length, 2);
 });

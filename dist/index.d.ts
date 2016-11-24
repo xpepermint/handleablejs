@@ -2,6 +2,7 @@ export declare type HandlerBlock = (error: Error, value: any, recipe: any) => bo
 export interface RecipeObject {
     handler: string;
     message: string | (() => string);
+    condition?: (() => string);
     [option: string]: any;
 }
 export interface HandlerError {
