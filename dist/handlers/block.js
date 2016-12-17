@@ -1,14 +1,12 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.block = block;
-function block(error, recipe) {
-  if (!error || !recipe) return false;
-
-  if (recipe.block) {
-    return recipe.block.call(this, { error: error, recipe: recipe });
-  }
-  return false;
+function block(error, options) {
+    if (options === void 0) { options = {}; }
+    if (!error || !options)
+        return false;
+    var block = options.block;
+    if (block) {
+        return block.call(this, { error: error, options: options });
+    }
+    return false;
 }
+exports.block = block;

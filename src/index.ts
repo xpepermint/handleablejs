@@ -1,18 +1,52 @@
+import * as merge from 'lodash.merge';
 import * as builtInHandlers from './handlers';
+
+/*
+* Recipe type definition.
+*/
+
+export interface HandlerRecipe {
+  handler: string;
+  message: string;
+  code: number;
+  condition?: () => boolean | Promise<boolean>;
+  [key: string]: any;
+}
+
+/*
+* Error type definition.
+*/
+
+export interface HandlerError {
+  handler: string;
+  message: string;
+  code: number;
+}
 
 /*
 * A core error handling class.
 */
 
 export class Handler {
+  firstErrorOnly: boolean;
+  handlers: {[name: string]: () => boolean | Promise<boolean>};
+  context: any;
 
   /*
   * Class constructor.
   */
 
-  constructor ({firstErrorOnly = false, handlers = {}, context = null} = {}) {
+  constructor ({
+    firstErrorOnly = false,
+    handlers = {},
+    context = null
+  }: {
+    firstErrorOnly?: boolean,
+    handlers?: {[name: string]: () => boolean | Promise<boolean>},
+    context?: any
+  } = {}) {
     this.firstErrorOnly = firstErrorOnly;
-    this.handlers = Object.assign({}, builtInHandlers, handlers);
+    this.handlers = merge(builtInHandlers, handlers);
     this.context = context;
   }
 
@@ -20,7 +54,7 @@ export class Handler {
   * Returns a new instance of HandlerError instance.
   */
 
-  _createHandlerError (recipe) {
+  _createHandlerError (recipe: HandlerRecipe): HandlerError {
     let {handler, code = 422} = recipe;
 
     let message = typeof recipe.message === 'function'
@@ -35,7 +69,7 @@ export class Handler {
   * Replaces variables in a string (e.g. `%{variable}`) with object key values.
   */
 
-  _createString (template, data) {
+  _createString (template: string, data: any): string {
     for (let key in data) {
       template = template.replace(`%{${key}}`, data[key]);
     }
@@ -46,7 +80,7 @@ export class Handler {
   * Validates the `error` against the `recipes`.
   */
 
-  async handle (error, recipes = []) {
+  async handle (error: Error, recipes: HandlerRecipe[] = []): Promise<HandlerError[]> {
     let errors = [];
 
     for (let recipe of recipes) {

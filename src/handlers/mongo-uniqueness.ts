@@ -1,5 +1,9 @@
-export function mongoUniqueness (error, recipe) {
-  if (!error || !recipe) return false;
+export interface Options {
+  indexName?: string;
+}
+
+export function mongoUniqueness (error: any, options: Options = {}): boolean {
+  if (!error || !options) return false;
 
   let matches = (
     error
@@ -13,7 +17,7 @@ export function mongoUniqueness (error, recipe) {
 
   if (matches) {
     var index = error.message.split('$', 2)[1].split(' ', 2)[0];
-    return recipe.indexName === index;
+    return options.indexName === index;
   }
   return false;
 }

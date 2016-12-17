@@ -1,9 +1,9 @@
-export declare type HandlerBlock = (error: Error, value: any, recipe: any) => boolean | Promise<boolean>;
-export interface RecipeObject {
+export interface HandlerRecipe {
     handler: string;
-    message: string | (() => string);
-    condition?: (() => string);
-    [option: string]: any;
+    message: string;
+    code: number;
+    condition?: () => boolean | Promise<boolean>;
+    [key: string]: any;
 }
 export interface HandlerError {
     handler: string;
@@ -13,17 +13,17 @@ export interface HandlerError {
 export declare class Handler {
     firstErrorOnly: boolean;
     handlers: {
-        [reciper: string]: HandlerBlock;
+        [name: string]: () => boolean | Promise<boolean>;
     };
     context: any;
     constructor({firstErrorOnly, handlers, context}?: {
         firstErrorOnly?: boolean;
         handlers?: {
-            [name: string]: HandlerBlock;
+            [name: string]: () => boolean | Promise<boolean>;
         };
         context?: any;
     });
-    protected _createHandlerError(recipe: RecipeObject): HandlerError;
-    protected _createString(template: any, data: any): string;
-    handle(error: Error, recipes?: RecipeObject[]): Promise<HandlerError[]>;
+    _createHandlerError(recipe: HandlerRecipe): HandlerError;
+    _createString(template: string, data: any): string;
+    handle(error: Error, recipes?: HandlerRecipe[]): Promise<HandlerError[]>;
 }
