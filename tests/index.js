@@ -30,7 +30,7 @@ test('method `handle` with onlyFirstError=true should return only one error', as
   error.code = 404;
 
   let h = new Handler({
-    firstErrorOnly: true,
+    failFast: true,
     handlers: {
       fooError (e) { return e.message === 'foo error' },
       notFound (e) { return e.code === 404 },

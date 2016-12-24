@@ -11,13 +11,13 @@ export interface HandlerError {
     code: number;
 }
 export declare class Handler {
-    firstErrorOnly: boolean;
+    failFast: boolean;
     handlers: {
         [name: string]: () => boolean | Promise<boolean>;
     };
     context: any;
-    constructor({firstErrorOnly, handlers, context}?: {
-        firstErrorOnly?: boolean;
+    constructor({failFast, handlers, context}?: {
+        failFast?: boolean;
         handlers?: {
             [name: string]: () => boolean | Promise<boolean>;
         };

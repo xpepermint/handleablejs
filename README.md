@@ -52,13 +52,13 @@ See the `./tests` folder for details.
 
 ## API
 
-**Handler({firstErrorOnly, handlers, context})**
+**Handler({failFast, handlers, context})**
 
 > A core validation class.
 
 | Option | Type | Required | Default | Description
 |--------|------|----------|---------|------------
-| firstErrorOnly | Boolean | No | false | When set to `true`, only the first error is handled otherwise all errors are returned.
+| failFast | Boolean | No | false | When set to `true`, only the first error is handled otherwise all errors are returned.
 | handlers | Object | No | built-in handlers | Object with custom handlers (this variable is merged with built-in handlers thus you can override a handler if you need to).
 | context | Object | No | null | A custom context reference which is applied to each handler.
 
@@ -66,7 +66,7 @@ See the `./tests` folder for details.
 import {Handler} from 'handleable';
 
 let v = new Handler({
-  firstErrorOnly: true,
+  failFast: true,
   handlers: {
     fooError ({error}) { return error.message === 'foo error' }, // custom handler
   },

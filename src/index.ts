@@ -28,7 +28,7 @@ export interface HandlerError {
 */
 
 export class Handler {
-  firstErrorOnly: boolean;
+  failFast: boolean;
   handlers: {[name: string]: () => boolean | Promise<boolean>};
   context: any;
 
@@ -37,15 +37,15 @@ export class Handler {
   */
 
   constructor ({
-    firstErrorOnly = false,
+    failFast = false,
     handlers = {},
     context = null
   }: {
-    firstErrorOnly?: boolean,
+    failFast?: boolean,
     handlers?: {[name: string]: () => boolean | Promise<boolean>},
     context?: any
   } = {}) {
-    this.firstErrorOnly = firstErrorOnly;
+    this.failFast = failFast;
     this.handlers = merge(builtInHandlers, handlers);
     this.context = context;
   }
@@ -102,7 +102,7 @@ export class Handler {
           this._createHandlerError(recipe)
         );
 
-        if (this.firstErrorOnly) break;
+        if (this.failFast) break;
       }
     }
 
