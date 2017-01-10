@@ -89,7 +89,7 @@ let recipe = {
   handler: 'block', // [required] handler name
   message: '%{foo} is unknown error', // [required] handler error message (note that you can insert related recipe values by using the %{key} syntax)
   condition: () => true, // [optional] a condition which switches the validation on/off
-  async block ({error, recipe}) { return true } // [handler specific] handler-specific property
+  async block (error, recipe) { return true }, // [handler specific] handler-specific property
   foo: 'bar' // [optional] a custom variable
 };
 let recipes = [recipe];
@@ -110,7 +110,7 @@ await h.handle(error, recipes);
 let recipe = {
   handler: 'block',
   message: 'is unknown error',
-  async block ({error, recipe}) { return true }
+  async block (error, recipe) { return true }
 };
 ```
 
