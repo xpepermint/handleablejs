@@ -15,9 +15,9 @@ test('succeeds when matching error', async (t) => {
   error.code = 400;
 
   t.is(block(error, {
-    block ({error}) { return error.code === 400 }
+    block (error) { return error.code === 400 }
   }), true);
   t.is(await block(error, {
-    async block ({error}) { return error.code === 400 }
+    async block (error) { return error.code === 400 }
   }), true);
 });

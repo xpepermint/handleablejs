@@ -5,7 +5,7 @@ function block(error, options) {
         return false;
     var block = options.block;
     if (block) {
-        return block.call(this, { error: error, options: options });
+        return block.call(this, error, options);
     }
     return false;
 }

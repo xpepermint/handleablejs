@@ -1,5 +1,5 @@
 export interface Options {
-  block?: () => boolean | Promise<boolean>;
+  block?: (error: any, options: any) => boolean | Promise<boolean>;
 }
 
 export function block (error: any, options: Options = {}): boolean {
@@ -7,7 +7,7 @@ export function block (error: any, options: Options = {}): boolean {
 
   let {block} = options;
   if (block) {
-    return block.call(this, {error, options});
+    return block.call(this, error, options);
   }
   return false;
 }
