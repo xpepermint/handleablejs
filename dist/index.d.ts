@@ -1,7 +1,6 @@
 export interface HandlerRecipe {
     handler: string;
     message: string;
-    code: number;
     condition?: () => boolean | Promise<boolean>;
     [key: string]: any;
 }
