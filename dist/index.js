@@ -4,7 +4,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
@@ -83,12 +83,10 @@ var Handler = (function () {
                         _i = 0, recipes_1 = recipes;
                         _a.label = 1;
                     case 1:
-                        if (!(_i < recipes_1.length))
-                            return [3 /*break*/, 6];
+                        if (!(_i < recipes_1.length)) return [3 /*break*/, 6];
                         recipe = recipes_1[_i];
                         condition = recipe.condition;
-                        if (!condition)
-                            return [3 /*break*/, 3];
+                        if (!condition) return [3 /*break*/, 3];
                         return [4 /*yield*/, condition.call(this.context, error, recipe)];
                     case 2:
                         result = _a.sent();
