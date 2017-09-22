@@ -1,4 +1,5 @@
 "use strict";
+exports.__esModule = true;
 function mongoUniqueness(error, options) {
     if (options === void 0) { options = {}; }
     if (!error || !options)
