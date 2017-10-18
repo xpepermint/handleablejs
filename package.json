@@ -1,6 +1,6 @@
 {
   "name": "handleable",
-  "version": "0.22.0",
+  "version": "0.22.1",
   "description": "A library for synchronous and asynchronous error handling.",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -40,6 +40,7 @@
   "author": "Kristijan Sedlak (Xpepermint)",
   "license": "MIT",
   "devDependencies": {
+    "@types/lodash.merge": "^4.6.3",
     "ava": "^0.22.0",
     "typescript": "^2.5.2"
   },

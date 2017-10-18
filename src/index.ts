@@ -1,4 +1,4 @@
-import * as merge from 'lodash.merge';
+import merge = require('lodash.merge');
 import * as builtInHandlers from './handlers';
 
 /*
