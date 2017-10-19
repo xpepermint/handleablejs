@@ -65,6 +65,9 @@ var Handler = /** @class */ (function () {
     * Replaces variables in a string (e.g. `%{variable}`) with object key values.
     */
     Handler.prototype._createString = function (template, data) {
+        if (!template) {
+            return template;
+        }
         for (var key in data) {
             template = template.replace("%{" + key + "}", data[key]);
         }

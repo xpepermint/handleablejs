@@ -79,6 +79,30 @@ test('recipe `message` variables %{...} should be replaced with related recipe v
   t.deepEqual(errors[0].message, 'bar is required');
 });
 
+test('recipe `message` can be empty or absent', async (t) => {
+  let error = new Error();
+  error.message = 'foo error';
+
+  let h = new Handler({
+    handlers: {
+      fooError (e) { return e.message === 'foo error' }
+    }
+  });
+  let recipes = [
+    {handler: 'fooError', message: null},
+    {handler: 'fooError', message: undefined},
+    {handler: 'fooError'}
+  ];
+  let errors = await h.handle(error, recipes);
+
+  t.deepEqual(errors[0].message, null);
+  t.deepEqual(errors[1].message, undefined);
+  t.deepEqual(errors[2].message, undefined);
+});
+
+
+
+
 test('recipe `condition` key can switch off the handling', async (t) => {
   let error = new Error();
   error.message = 'foo error';

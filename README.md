@@ -34,13 +34,13 @@ let e = await h.handle(
   [ // list of handler recipes
     {
       handler: 'block', // handler name
-      message: '%{foo} unhandled error', // handler error message
+      message: '%{foo} unhandled error', // optional handler error message
       block: async () => true // handler-specific property,
       foo: 'bar' // custom variable for the message
     },
     {
       handler: 'mongoUniqueness', // handler name
-      message: 'already taken', // handler error message
+      message: 'already taken', // optional handler error message
       indexName: 'uniqueEmail' // handler-specific property
     }
   ]
@@ -86,9 +86,10 @@ let v = new Handler({
 let error = new Error();
 let recipe = {
   handler: 'block', // [required] handler name
-  message: '%{foo} is unknown error', // [required] handler error message (note that you can insert related recipe values by using the %{key} syntax)
+  message: '%{foo} is unknown error', // [optional] handler error message (note that you can insert related recipe values by using the %{key} syntax)
+  code: 422, // [optional] handler error code
   condition: () => true, // [optional] a condition which switches the validation on/off
-  async block (error, recipe) { return true }, // [handler specific] handler-specific property
+  async block (error, recipe) { return true }, // [handler-specific] handler-specific property
   foo: 'bar' // [optional] a custom variable
 };
 let recipes = [recipe];
