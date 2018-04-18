@@ -7,7 +7,7 @@ import * as builtInHandlers from './handlers';
 
 export interface HandlerRecipe {
   handler: string;
-  message?: string;
+  message?: string | (() => string);
   code?: number;
   condition?: () => boolean | Promise<boolean>;
   [key: string]: any;
